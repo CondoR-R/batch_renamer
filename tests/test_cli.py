@@ -1,6 +1,6 @@
 import pytest
 
-import batch_renamer.cli as cli
+from batch_renamer import cli as cli
 
 
 def test_correct_args(monkeypatch):

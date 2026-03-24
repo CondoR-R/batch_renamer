@@ -1,14 +1,8 @@
 # command line interface
 import argparse
-import dataclasses
 import textwrap
 
-
-@dataclasses.dataclass()
-class Args:
-    path: str
-    pattern: str
-    dry_run: bool
+from .args_type import Args
 
 
 def _add_args(parser: argparse.ArgumentParser) -> None:
@@ -56,8 +50,8 @@ def _epilog() -> str:
         """
         Переименование необратимо, поэтому перед выполнением следует убедиться в правильности шаблона через --dry-run.
         Пример использования:
-        batch_renamer --pattern "image_{counter:03d}.png" --dry-run
-        batch_renamer --path ./docs --pattern "doc_{counter}.pdf"
+        cli --pattern "image_{counter:03d}.png" --dry-run
+        cli --path ./docs --pattern "doc_{counter}.pdf"
         """
     )
     return textwrap.dedent(epilog)
