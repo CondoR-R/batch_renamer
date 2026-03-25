@@ -8,8 +8,8 @@ from .args_type import Args
 def _add_args(parser: argparse.ArgumentParser) -> None:
     """
     Добавляет доступные аргументы командной строки
-    :param parser:
-    :return:
+    :param parser: argparse.ArgumentParser
+    :return: None
     """
     parser.add_argument(
         "--path", help="папка с файлами (по умолчанию текущая)", default="."
@@ -29,7 +29,7 @@ def _add_args(parser: argparse.ArgumentParser) -> None:
 def _description() -> str:
     """
     Возвращает текст описания программы при вызове --help
-    :return:
+    :return: str
     """
     description = """
         Утилита для пакетного переименовывания файлов.
@@ -41,7 +41,7 @@ def _description() -> str:
 def _epilog() -> str:
     """
     Возвращает текст эпилога программы при вызове  --help
-    :return:
+    :return: str
     """
     epilog = """
         Переименование необратимо, поэтому перед выполнением следует убедиться в правильности шаблона через --dry-run.
@@ -55,7 +55,7 @@ def _epilog() -> str:
 def get_args() -> Args:
     """
     Получение аргументов командной строки
-    :return:
+    :return: Args
     """
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter,
