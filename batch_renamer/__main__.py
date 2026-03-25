@@ -1,12 +1,13 @@
 from . import cli
 from . import validators
+from . import renamer
 
 
 def main():
     args = cli.get_args()
-    print(args)
     path = validators.validate_path(args.path)
-    print(path)
+    r = renamer.Renamer(path=path, pattern=args.pattern)
+    r.execute(args.dry_run)
 
 
 if __name__ == "__main__":
