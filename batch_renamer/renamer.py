@@ -11,7 +11,12 @@ class Renamer:
         self._files: list[pathlib.Path] = []
         self._new_names: list[str] = []
 
-    def _collect_files(self):
+    def _collect_files(self) -> None:
+        """
+        Получает файлы в переданной при инициализации директории.
+        При отсутствии доступа к файлу выводит предупреждение
+        :return: None
+        """
         for file in sorted(self._path.glob("*")):
             try:
                 if file.is_file():
@@ -23,6 +28,10 @@ class Renamer:
                 continue
 
     def _parse_pattern(self) -> tuple[str, str, str, str]:
+        """
+        Получает из паттерна данные, нобходимые для формирования новых имен файлов
+        :return: prefix, dynamic_part, suffix, extension
+        """
         prefix = dynamic_part = suffix = extension = ""
 
         pattern_arr = self._pattern.rsplit(".", 1)
@@ -41,7 +50,11 @@ class Renamer:
 
         return (prefix, dynamic_part, suffix, extension)
 
-    def _generate_new_names(self):
+    def _generate_new_names(self) -> None:
+        """
+        Генерирует новые названия файлов
+        :return: None
+        """
         prefix, dynamic_part, suffix, extension = self._parse_pattern()
 
         for i in range(len(self._files)):
@@ -52,13 +65,17 @@ class Renamer:
                 )
                 self._new_names.append(filename)
 
-    def _change_names(self):
+    def _change_names(self) -> None:
+        """
+        Производит переименовывание файлов.
+        При конфликте имен или при отсутствии доступа к файлу выводит предупреждения
+        :return: None
+        """
         success_count = 0
         for i, file in enumerate(self._files):
             new_name = pathlib.Path(self._path, self._new_names[i])
             try:
                 if new_name.exists():
-                    # raise exceptions.RenameConflictError(self._files[i], new_name)
                     cli.show_warning(
                         str(exceptions.RenameConflictError(file, new_name))
                     )
@@ -66,16 +83,17 @@ class Renamer:
 
                 file.rename(new_name)
                 success_count += 1
-            # except exceptions.RenameConflictError as err:
-            #     cli.show_warning(str(err))
-            #     continue
             except OSError as err:
-                cli.show_warning(
-                    f"Не удалось получить доступ к файлу {file}: {err}"
-                )
+                cli.show_warning(f"Не удалось получить доступ к файлу {file}: {err}")
         cli.show_sucsess_changes(success_count)
 
     def execute(self, dry_run: bool):
+        """
+        Основной метод класса. Выполяет все действия для переименовывания файлов
+        и предпросмотра результата.
+        :param dry_run: bool: True - показать изменения (не применять их)
+        :param dry_run: bool: False - применить изменения
+        """
         self._collect_files()
         if not len(self._files):
             cli.show_empty_message(self._path)

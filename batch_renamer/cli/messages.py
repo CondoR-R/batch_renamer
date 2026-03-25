@@ -34,12 +34,28 @@ def show_empty_message(dir: pathlib.Path) -> None:
 
 
 def show_sucsess_changes(count: int) -> None:
+    """
+    Выводит пользователю сообщение о колличестве успешно переименованных файлов.
+    Принимает колличество успешно переименованных файлов
+    :param count: int
+    :return: None
+    """
     print(f"Успешно переименовано {count} файлов")
 
 
-def show_error(err: exceptions.BatchRenamerError):
+def show_error(err: exceptions.BatchRenamerError) -> None:
+    """
+    Выводит сообщение об ошибке.
+    :param err: exceptions.BatchRenamerError
+    :return: None
+    """
     print(f"ОШИБКА: {err}", file=sys.stderr)
 
 
 def show_warning(message: str) -> None:
+    """
+    Выводит сообщение с предупреждением
+    :param message: str
+    :return: None
+    """
     print(f"ПРЕДУПРЕЖДЕНИЕ: {message}", file=sys.stderr)
