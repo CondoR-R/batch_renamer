@@ -1,4 +1,4 @@
-# command line interface
+# задание и получение аргументов командной строки
 import argparse
 import textwrap
 
