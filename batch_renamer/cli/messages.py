@@ -28,3 +28,7 @@ def show_empty_message(dir: pathlib.Path) -> None:
     :return: None
     """
     print(f"В директории {dir} отсутствуют файлы")
+
+
+def show_sucsess_changes() -> None:
+    print("Файлы успешно переименованы")

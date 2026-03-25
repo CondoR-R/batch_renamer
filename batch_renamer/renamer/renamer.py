@@ -43,7 +43,10 @@ class Renamer:
                 )
                 self._new_names.append(filename)
 
-    def _change_names(self): ...
+    def _change_names(self):
+        for i in range(len(self._files)):
+            self._files[i].rename(pathlib.PurePath(self._path, self._new_names[i]))
+        cli.show_sucsess_changes()
 
     def execute(self, dry_run: bool):
         self._collect_files()
