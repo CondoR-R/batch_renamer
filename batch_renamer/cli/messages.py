@@ -1,4 +1,7 @@
 import pathlib
+import sys
+
+from batch_renamer import exceptions
 
 
 def show_changes(files: list[pathlib.Path], new_names: list[str]) -> None:
@@ -30,5 +33,13 @@ def show_empty_message(dir: pathlib.Path) -> None:
     print(f"В директории {dir} отсутствуют файлы")
 
 
-def show_sucsess_changes() -> None:
-    print("Файлы успешно переименованы")
+def show_sucsess_changes(count: int) -> None:
+    print(f"Успешно переименовано {count} файлов")
+
+
+def show_error(err: exceptions.BatchRenamerError):
+    print(f"ОШИБКА: {err}", file=sys.stderr)
+
+
+def show_warning(message: str) -> None:
+    print(f"ПРЕДУПРЕЖДЕНИЕ: {message}", file=sys.stderr)

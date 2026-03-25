@@ -1,8 +1,14 @@
 # задание и получение аргументов командной строки
 import argparse
 import textwrap
+import dataclasses
 
-from .args_type import Args
+
+@dataclasses.dataclass()
+class Args:
+    path: str
+    pattern: str
+    dry_run: bool
 
 
 def _add_args(parser: argparse.ArgumentParser) -> None:

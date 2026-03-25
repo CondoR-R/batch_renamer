@@ -1,6 +1,7 @@
 import pathlib
 
-import batch_renamer.cli as cli
+from . import cli
+from . import exceptions
 
 
 class Renamer:
@@ -11,7 +12,15 @@ class Renamer:
         self._new_names: list[str] = []
 
     def _collect_files(self):
-        self._files = [file for file in sorted(self._path.glob("*")) if file.is_file()]
+        for file in sorted(self._path.glob("*")):
+            try:
+                if file.is_file():
+                    self._files.append(file)
+            except OSError as err:
+                cli.show_warning(
+                    f"Не удалось получить доступ к файлу {file.name}: {err}"
+                )
+                continue
 
     def _parse_pattern(self) -> tuple[str, str, str, str]:
         prefix = dynamic_part = suffix = extension = ""
@@ -44,9 +53,27 @@ class Renamer:
                 self._new_names.append(filename)
 
     def _change_names(self):
-        for i in range(len(self._files)):
-            self._files[i].rename(pathlib.PurePath(self._path, self._new_names[i]))
-        cli.show_sucsess_changes()
+        success_count = 0
+        for i, file in enumerate(self._files):
+            new_name = pathlib.Path(self._path, self._new_names[i])
+            try:
+                if new_name.exists():
+                    # raise exceptions.RenameConflictError(self._files[i], new_name)
+                    cli.show_warning(
+                        str(exceptions.RenameConflictError(file, new_name))
+                    )
+                    continue
+
+                file.rename(new_name)
+                success_count += 1
+            # except exceptions.RenameConflictError as err:
+            #     cli.show_warning(str(err))
+            #     continue
+            except OSError as err:
+                cli.show_warning(
+                    f"Не удалось получить доступ к файлу {file}: {err}"
+                )
+        cli.show_sucsess_changes(success_count)
 
     def execute(self, dry_run: bool):
         self._collect_files()
