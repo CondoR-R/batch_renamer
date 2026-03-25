@@ -12,19 +12,17 @@ def _add_args(parser: argparse.ArgumentParser) -> None:
     :return:
     """
     parser.add_argument(
-        "--path",
-        help="папка с файлами (по умолчанию текущая)",
-        default="."
+        "--path", help="папка с файлами (по умолчанию текущая)", default="."
     )
     parser.add_argument(
         "--pattern",
         help="шаблон имени (например, photo_{counter:03d}.jpg)",
-        required=True
+        required=True,
     )
     parser.add_argument(
         "--dry-run",
         help="показать, что будет переименовано, но не применять",
-        action="store_true"
+        action="store_true",
     )
 
 
@@ -33,11 +31,10 @@ def _description() -> str:
     Возвращает текст описания программы при вызове --help
     :return:
     """
-    description = (
-        """
+    description = """
         Утилита для пакетного переименовывания файлов.
         В заданной директории по заданному шаблону переименовывет все файлы.
-        """)
+        """
     return textwrap.dedent(description)
 
 
@@ -46,14 +43,12 @@ def _epilog() -> str:
     Возвращает текст эпилога программы при вызове  --help
     :return:
     """
-    epilog = (
-        """
+    epilog = """
         Переименование необратимо, поэтому перед выполнением следует убедиться в правильности шаблона через --dry-run.
         Пример использования:
         cli --pattern "image_{counter:03d}.png" --dry-run
         cli --path ./docs --pattern "doc_{counter}.pdf"
         """
-    )
     return textwrap.dedent(epilog)
 
 
@@ -65,7 +60,7 @@ def get_args() -> Args:
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawTextHelpFormatter,
         description=_description(),
-        epilog=_epilog()
+        epilog=_epilog(),
     )
     _add_args(parser)
     parsed = parser.parse_args()
