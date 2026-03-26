@@ -35,7 +35,7 @@ def show_empty_message(dir: pathlib.Path) -> None:
     print(f"В директории {dir} отсутствуют файлы")
 
 
-def show_sucsess_changes(count: int) -> None:
+def show_success_changes(count: int) -> None:
     """
     Выводит пользователю сообщение о колличестве успешно переименованных файлов.
     Принимает колличество успешно переименованных файлов

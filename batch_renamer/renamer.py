@@ -62,7 +62,7 @@ class Renamer:
             return str(i)
 
         symbol, length = validators.validate_counter_param(param)
-        counter = (symbol * (length - len(str(i))) + str(i))[:length]
+        counter = (symbol * max(0, length - len(str(i))) + str(i))[:length]
         return counter
 
     def _dynamic_match_case(self, dynamic_type: str, dynamic_param: str, i: int) -> str:
@@ -118,7 +118,6 @@ class Renamer:
             )
             validators.validate_filename(filename)
             self._new_names.append(filename)
-           
 
     def _change_names(self) -> None:
         """
@@ -140,7 +139,7 @@ class Renamer:
                 success_count += 1
             except OSError as err:
                 cli.show_warning(f"Не удалось получить доступ к файлу {file}: {err}")
-        cli.show_sucsess_changes(success_count)
+        cli.show_success_changes(success_count)
 
     def execute(self, dry_run: bool):
         """
