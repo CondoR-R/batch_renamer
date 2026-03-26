@@ -9,7 +9,7 @@ class PathNotFoundError(BatchRenamerError):
     """
     Путь не найден.
     Принимает путь к файлу/директории на котором произошла ошибка
-    :param path: pathlib.Path
+    :param pathlib.Path path: путь к файлу/директории
     """
 
     def __init__(self, path: pathlib.Path):
@@ -22,17 +22,21 @@ class PathNotFoundError(BatchRenamerError):
 class PatternValidationError(BatchRenamerError):
     """
     Неверный формат паттерна.
+    :param str msg: сообщение для конкретики ошибки паттерна
     """
 
+    def __init__(self, msg: str):
+        self.msg = msg
+
     def __str__(self):
-        return f"Неверный формат паттерна для именования файлов"
+        return f"Неверный формат паттерна для именования файлов: {self.msg}"
 
 
 class RenameConflictError(BatchRenamerError):
     """
     Ошибка при переименовывании файла (файл с новым именем уже сущестует)
-    :param old_name: pathlib.Path
-    :param new_name: pathlib.Path
+    :param pathlib.Path old_name: путь к файлу под старым именем
+    :param pathlib.Path new_name: путь к файлу под новым именем
     """
 
     def __init__(self, old_name: pathlib.Path, new_name: pathlib.Path):
@@ -49,7 +53,7 @@ class RenameConflictError(BatchRenamerError):
 class FileAccessError(BatchRenamerError):
     """
     Ошибка доступа к файлу
-    :param file: pathlib.Path
+    :param pathlib.Path file: путь к файлу
     """
 
     def __init__(self, file: pathlib.Path):
@@ -62,7 +66,7 @@ class FileAccessError(BatchRenamerError):
 class PathNotDirError(BatchRenamerError):
     """
     Указанный путь не является директорией
-    :param path: pathlib.Path
+    :param pathlib.Path path: путь к ошибочной директории
     """
 
     def __init__(self, path: pathlib.Path):

@@ -14,7 +14,7 @@ class Args:
 def _add_args(parser: argparse.ArgumentParser) -> None:
     """
     Добавляет доступные аргументы командной строки
-    :param parser: argparse.ArgumentParser
+    :param argparse.ArgumentParser parser: парсер аргументов командной строки
     :return: None
     """
     parser.add_argument(

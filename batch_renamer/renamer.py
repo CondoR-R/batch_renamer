@@ -2,6 +2,7 @@ import pathlib
 
 from . import cli
 from . import exceptions
+from . import validators
 
 
 class Renamer:
@@ -35,13 +36,13 @@ class Renamer:
         prefix = dynamic_part = suffix = extension = ""
 
         pattern_arr = self._pattern.rsplit(".", 1)
-        if len(pattern_arr) == 2:
+        if len(pattern_arr) == 2:  # если есть расширение файла в паттерне
             extension = pattern_arr[-1]
         pattern = pattern_arr[0]
 
         dynamic_start = pattern.find("{")
         dynamic_end = pattern.find("}", dynamic_start)
-        if dynamic_start == -1 or dynamic_end == -1:
+        if dynamic_start == -1 or dynamic_end == -1:  # отсутсвует динамическая часть
             prefix = pattern
         else:
             prefix = pattern[:dynamic_start]
@@ -49,6 +50,44 @@ class Renamer:
             suffix = pattern[dynamic_end + 1 :]
 
         return (prefix, dynamic_part, suffix, extension)
+
+    def _get_dynamic_counter(self, param: str, i: int) -> str: ...
+
+    def _dynamic_match_case(self, dynamic_type: str, dynamic_param: str, i: int) -> str:
+        """
+        Обработка доступных вариаций динамической части паттерна
+        :param str dynamic_type:
+        """
+        match dynamic_type:
+            case "counter":
+                dynamic = self._get_dynamic_counter(dynamic_param, i)
+            case _:
+                ...
+        return dynamic
+
+    def _get_dynamic_content(self, dynamic_part: str, i: int) -> str:
+        """
+        Получение содержимого динамической части названия файла
+        :param dynamic_part str: динамическая часть
+        :param i int: индекс файла в списке
+        :return: str
+        """
+        if not dynamic_part:
+            return ""
+
+        dynamic_arr = dynamic_part.split(":")
+        if len(dynamic_arr) < 2:
+            # raise exceptions.PatternValidationError(
+            #     "Неверный формат динамической части паттерна, для получения списка"
+            #     / 'доступных динамичкских частей выполните "batch-renamer -h"'
+            # )
+            dynamic_type = dynamic_arr[0]
+            dynamic_param = ""
+        else:
+            dynamic_type, dynamic_param = dynamic_arr
+
+        dynamic = self._dynamic_match_case(dynamic_type, dynamic_param, i)
+        return dynamic
 
     def _generate_new_names(self) -> None:
         """
@@ -58,12 +97,22 @@ class Renamer:
         prefix, dynamic_part, suffix, extension = self._parse_pattern()
 
         for i in range(len(self._files)):
-            if dynamic_part == "counter:03d":
-                counter = ("0" * (3 - len(str(i + 1))) + str(i + 1))[:3]
-                filename = (
-                    prefix + counter + suffix + (("." + extension) if extension else "")
-                )
-                self._new_names.append(filename)
+            dynamic_content = self._get_dynamic_content(dynamic_part, i)
+            filename = (
+                prefix
+                + dynamic_content
+                + suffix
+                + (("." + extension) if extension else extension)
+            )
+            validators.validate_filename(filename)
+            self._new_names.append(filename)
+            # if dynamic_part == "counter:03d":
+            #     counter = ("0" * (3 - len(str(i + 1))) + str(i + 1))[:3]
+            #     filename = (
+            #         prefix + counter + suffix + (("." + extension) if extension else "")
+            #     )
+            #     validators.validate_filename(filename)
+            #     self._new_names.append(filename)
 
     def _change_names(self) -> None:
         """

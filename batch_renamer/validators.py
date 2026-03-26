@@ -1,6 +1,18 @@
 import pathlib
+import typing
 
 from . import exceptions
+
+
+def _get_forbidden_names() -> list[str]:
+    forbidden_names = ["CON", "PRN", "AUX", "NUL"]
+    for i in range(1, 10):
+        forbidden_names.append(f"COM{i}")
+        forbidden_names.append(f"LPT{i}")
+    return forbidden_names
+
+
+FORBIDDEN_NAMES: typing.Final = _get_forbidden_names()
 
 
 def validate_path(path: str) -> pathlib.Path:
@@ -8,7 +20,7 @@ def validate_path(path: str) -> pathlib.Path:
     Проверяет на директорию и существует ли она по указаному пути.
     Если пути не сущестует или по переданному пути находится не директория,
     пробрасывается ошибка.
-    :param path: str
+    :param path str: путь к директории
     :return: pathlib.Path
     """
     p = pathlib.Path(path)
@@ -17,3 +29,36 @@ def validate_path(path: str) -> pathlib.Path:
     if not p.is_dir():
         raise exceptions.PathNotDirError(p)
     return p
+
+
+def validate_filename(filename: str):
+    """
+    Проверяет, является ли имя файла валидным, если валидно - ничего не возвращает,
+    если нет - пробрасывает ошибку.
+    :param filename str: имя файла.
+    :return: None
+    """
+    # проверка на пустое имя
+    if not filename:
+        raise exceptions.PatternValidationError("Имя файла не должно быть пустым")
+
+    # проверка на отстуствие точки или пробела в конце
+    if filename[-1] == " " or filename[-1] == ".":
+        raise exceptions.PatternValidationError(
+            "Имя файла не должно оканчиваться точкой или пробелом"
+        )
+
+    # проверка на отсутвие запрещенных символов
+    for s in '<>:"/\\|?*':
+        if s in filename:
+            raise exceptions.PatternValidationError(
+                f'В имени файла не должен быть символ "{s}"'
+            )
+
+    # проверка на запрещенные имена
+    name = filename.rsplit(".", 1)[0]
+    for f_name in FORBIDDEN_NAMES:
+        if name.lower() == f_name.lower():
+            raise exceptions.PatternValidationError(
+                f"{name} не может быть использовано в качестве имени файла"
+            )
