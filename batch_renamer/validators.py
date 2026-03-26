@@ -62,3 +62,32 @@ def validate_filename(filename: str):
             raise exceptions.PatternValidationError(
                 f"{name} не может быть использовано в качестве имени файла"
             )
+
+
+def validate_counter_param(param: str) -> tuple[str, int]:
+    """
+    Валидация параметра для counter
+    :param str param: параметр counter, не пустая строка
+    :return: символ заполнения пробелов, колличество цифр
+    """
+    # если не указан тип d (decimal)
+    if param[-1] != "d":
+        raise exceptions.PatternValidationError(
+            "Неверный тип параметра нумерации в паттерне (не указан тип d)"
+        )
+
+    # если параметр не подходит под шаблон "{символ заполнеия пробелов}{колличество символов}d"
+    if len(param) < 3:
+        raise exceptions.PatternValidationError(
+            "Параметр паттерна для counter должен соответствовать шаблону"
+            '"{символ заполнеия пробелов}{колличество символов}d"'
+        )
+
+    symbol = param[0]
+    try:
+        length = int(param[1:-1])
+    except:
+        raise exceptions.PatternValidationError(
+            f'Длина динамической части в паттерне "{param[1:-1]}" должна быть числом'
+        )
+    return (symbol, length)

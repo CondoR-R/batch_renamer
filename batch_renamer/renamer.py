@@ -51,25 +51,41 @@ class Renamer:
 
         return (prefix, dynamic_part, suffix, extension)
 
-    def _get_dynamic_counter(self, param: str, i: int) -> str: ...
+    def _get_dynamic_counter(self, param: str, i: int) -> str:
+        """
+        Получение порядкового номера имени файла
+        :param str param: настройка нумерации
+        :param int i: номер файла
+        """
+        # если параметр пустой или указан только тип d (decimal), то порядковый номер - номер файла
+        if (not param) or param == "d":
+            return str(i)
+
+        symbol, length = validators.validate_counter_param(param)
+        counter = (symbol * (length - len(str(i))) + str(i))[:length]
+        return counter
 
     def _dynamic_match_case(self, dynamic_type: str, dynamic_param: str, i: int) -> str:
         """
         Обработка доступных вариаций динамической части паттерна
-        :param str dynamic_type:
+        :param str dynamic_type: тип динамической части
+        :param str dynamic_param: параметр динамической части
+        :param int i: индекс файла в списке
+        :return: str
         """
         match dynamic_type:
             case "counter":
-                dynamic = self._get_dynamic_counter(dynamic_param, i)
+                return self._get_dynamic_counter(dynamic_param, i + 1)
             case _:
-                ...
-        return dynamic
+                raise exceptions.PatternValidationError(
+                    f'Неизвестный тип динамической части паттерна "{dynamic_type}"'
+                )
 
     def _get_dynamic_content(self, dynamic_part: str, i: int) -> str:
         """
         Получение содержимого динамической части названия файла
-        :param dynamic_part str: динамическая часть
-        :param i int: индекс файла в списке
+        :param str dynamic_part: динамическая часть
+        :param int i: индекс файла в списке
         :return: str
         """
         if not dynamic_part:
@@ -77,10 +93,6 @@ class Renamer:
 
         dynamic_arr = dynamic_part.split(":")
         if len(dynamic_arr) < 2:
-            # raise exceptions.PatternValidationError(
-            #     "Неверный формат динамической части паттерна, для получения списка"
-            #     / 'доступных динамичкских частей выполните "batch-renamer -h"'
-            # )
             dynamic_type = dynamic_arr[0]
             dynamic_param = ""
         else:
@@ -106,13 +118,7 @@ class Renamer:
             )
             validators.validate_filename(filename)
             self._new_names.append(filename)
-            # if dynamic_part == "counter:03d":
-            #     counter = ("0" * (3 - len(str(i + 1))) + str(i + 1))[:3]
-            #     filename = (
-            #         prefix + counter + suffix + (("." + extension) if extension else "")
-            #     )
-            #     validators.validate_filename(filename)
-            #     self._new_names.append(filename)
+           
 
     def _change_names(self) -> None:
         """
@@ -140,8 +146,8 @@ class Renamer:
         """
         Основной метод класса. Выполяет все действия для переименовывания файлов
         и предпросмотра результата.
-        :param dry_run: bool: True - показать изменения (не применять их)
-        :param dry_run: bool: False - применить изменения
+        :param bool dry_run: True - показать изменения (не применять их)
+        :param bool dry_run: False - применить изменения
         """
         self._collect_files()
         if not len(self._files):
