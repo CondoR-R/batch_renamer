@@ -1,4 +1,4 @@
-from .get_args import get_args
+from .get_args import get_args, Args
 from .messages import (
     show_changes,
     get_changes_accept,

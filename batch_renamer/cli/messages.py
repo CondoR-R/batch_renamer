@@ -7,23 +7,17 @@ from batch_renamer import exceptions
 def show_changes(files: list[pathlib.Path], new_names: list[str]) -> None:
     """
     Выводит в терминал изменения в названиях файлов.
+    Длины списков должны быть равны.
     :param list[pathlib.Path] files: список файлов со старыми названиями
     :param list[str] new_names: список новых названий файлов
     :return: None
     """
+    if not len(files):
+        return
+
     max_len = max(len(file.name) for file in files)
     for i in range(len(files)):
         print(f"{files[i].name:<{max_len}} -> {new_names[i]}")
-
-
-def get_changes_accept() -> bool:
-    """
-    Узнает от пользователя, принять ли изменения
-    :return: bool
-    """
-    answer = input("Принять изменения? Y/N: ")
-    ok = answer == "Y" or answer == "y"
-    return ok
 
 
 def show_empty_message(dir: pathlib.Path) -> None:
@@ -42,7 +36,7 @@ def show_success_changes(count: int) -> None:
     :param int count: колличество успешно переименованных файлов
     :return: None
     """
-    print(f"Успешно переименовано {count} файлов")
+    print(f"Успешно переименовано {count} файл(-а)(-ов)")
 
 
 def show_error(err: exceptions.BatchRenamerError) -> None:
@@ -60,4 +54,14 @@ def show_warning(message: str) -> None:
     :param str message: сообщение с предупреждением
     :return: None
     """
-    print(f"ПРЕДУПРЕЖДЕНИЕ: {message}", file=sys.stderr)
+    print(f"ПРЕДУПРЕЖДЕНИЕ: {message}", file=sys.stdout)
+
+
+def get_changes_accept() -> bool:
+    """
+    Узнает от пользователя, принять ли изменения
+    :return: bool
+    """
+    answer = input("Принять изменения? Y/N: ")
+    ok = answer == "Y" or answer == "y"
+    return ok
