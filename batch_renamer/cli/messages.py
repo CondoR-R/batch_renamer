@@ -26,7 +26,7 @@ def show_empty_message(dir: pathlib.Path) -> None:
     :param pathlib.Path dir: путь к директории
     :return: None
     """
-    print(f"В директории {dir} отсутствуют файлы")
+    print(f"В директории {dir} отсутствуют файлы с заданными расширениями")
 
 
 def show_success_changes(count: int) -> None:

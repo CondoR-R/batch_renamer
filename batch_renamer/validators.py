@@ -100,3 +100,21 @@ def validate_counter_param(param: str) -> tuple[str, int]:
             f'Длина динамической части в паттерне "{param[1:-1]}" должна быть числом'
         )
     return (symbol, length)
+
+
+def validate_ext(ext: list[str]) -> list[str]:
+    """
+    Валидация списка расширений
+    :param list[str] ext: список указанных расширений
+    :return: list[str]
+    """
+    ext_arr = []
+    for e in ext:
+        if not e.strip():
+            raise exceptions.ExtensionError(
+                "Указанное расширение не должно быть пустым"
+            )
+        if e[0] == ".":
+            e = e[1:]
+        ext_arr.append(e.lower())
+    return list(set(ext_arr))

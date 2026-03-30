@@ -74,3 +74,16 @@ class PathNotDirError(BatchRenamerError):
 
     def __str__(self):
         return f"Путь {self.path} не является директорией"
+
+
+class ExtensionError(BatchRenamerError):
+    """
+    Ошибка расширения файла
+    :param str msg: описание ошибки, связанной с расширением
+    """
+
+    def __init__(self, msg: str):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg

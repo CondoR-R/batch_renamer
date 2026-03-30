@@ -9,6 +9,7 @@ class Args:
     path: str
     pattern: str
     dry_run: bool
+    ext: list[str] | None
 
 
 def _add_args(parser: argparse.ArgumentParser) -> None:
@@ -30,6 +31,11 @@ def _add_args(parser: argparse.ArgumentParser) -> None:
         help="показать, что будет переименовано, но не применять",
         action="store_true",
     )
+    parser.add_argument(
+        "--ext",
+        help="указать расширение(-я) файлов, которые необходимо обработать",
+        nargs="+",
+    )
 
 
 def _description() -> str:
@@ -39,7 +45,8 @@ def _description() -> str:
     """
     description = """
         Утилита для пакетного переименовывания файлов.
-        В заданной директории по заданному шаблону переименовывет все файлы.
+        В заданной директории по заданному шаблону переименовывет все файлы. 
+        Если указаны обрабатываемые расширения, переименует только файлы с указанными расширениями.
         """
     return textwrap.dedent(description)
 
@@ -54,6 +61,7 @@ def _epilog() -> str:
         Пример использования:
         cli --pattern "image_{counter:03d}.png" --dry-run
         cli --path ./docs --pattern "doc_{counter}.pdf"
+        cli --pattern "doc_{counter}" --ext doc --ext pdf
         """
     return textwrap.dedent(epilog)
 
@@ -74,5 +82,5 @@ def get_args() -> Args:
         parser.error("При указании --path значение пути не должно быть пустым")
     if parsed.pattern == "":
         parser.error("Значение для флага --pattern не должно быть пустым")
-    args = Args(path=parsed.path, pattern=parsed.pattern, dry_run=parsed.dry_run)
+    args = Args(path=parsed.path, pattern=parsed.pattern, dry_run=parsed.dry_run, ext=parsed.ext)
     return args

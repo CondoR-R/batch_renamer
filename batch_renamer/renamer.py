@@ -6,19 +6,15 @@ from . import validators
 
 
 class Renamer:
-    def __init__(self, path: pathlib.Path, pattern: str):
+    def __init__(self, path: pathlib.Path, pattern: str, ext_arr: list[str] | None):
         self._path = path
         self._pattern = pattern
         self._files: list[pathlib.Path] = []
         self._new_names: list[str] = []
+        self._ext_arr = ext_arr
 
-    def _collect_files(self) -> None:
-        """
-        Получает файлы в переданной при инициализации директории.
-        При отсутствии доступа к файлу выводит предупреждение
-        :return: None
-        """
-        for file in sorted(self._path.glob("*")):
+    def _get_files(self, ext: str):
+        for file in sorted(self._path.glob(f"*.{ext}")):
             try:
                 if file.is_file():
                     self._files.append(file)
@@ -27,6 +23,19 @@ class Renamer:
                     f"Не удалось получить доступ к файлу {file.name}: {err}"
                 )
                 continue
+
+    def _collect_files(self) -> None:
+        """
+        Получает файлы в переданной при инициализации директории.
+        При отсутствии доступа к файлу выводит предупреждение
+        :return: None
+        """
+        if self._ext_arr is not None:
+            for ext in self._ext_arr:
+                self._get_files(ext)
+            self._files = sorted(self._files)
+        else:
+            self._get_files("*")
 
     def _parse_pattern(self) -> tuple[str, str, str, str]:
         """
@@ -51,6 +60,7 @@ class Renamer:
 
         if len(pattern_arr) == 2 and extension == "":
             suffix = suffix + "."
+
         return (prefix, dynamic_part, suffix, extension)
 
     def _get_dynamic_counter(self, param: str, i: int) -> str:
@@ -112,12 +122,11 @@ class Renamer:
 
         for i in range(len(self._files)):
             dynamic_content = self._get_dynamic_content(dynamic_part, i + 1)
-            filename = (
-                prefix
-                + dynamic_content
-                + suffix
-                + (("." + extension) if extension else extension)
-            )
+            if self._ext_arr is None:
+                ext = ("." + extension) if extension else extension
+            else:
+                ext = "." + str(self._files[i]).rsplit(".", 1)[1]
+            filename = prefix + dynamic_content + suffix + ext
             validators.validate_filename(filename)
             self._new_names.append(filename)
 
