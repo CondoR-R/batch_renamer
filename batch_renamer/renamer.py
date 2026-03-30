@@ -122,10 +122,10 @@ class Renamer:
 
         for i in range(len(self._files)):
             dynamic_content = self._get_dynamic_content(dynamic_part, i + 1)
-            if self._ext_arr is None:
-                ext = ("." + extension) if extension else extension
-            else:
+            if extension == "{ext}":
                 ext = "." + str(self._files[i]).rsplit(".", 1)[1]
+            else:
+                ext = ("." + extension) if extension else extension
             filename = prefix + dynamic_content + suffix + ext
             validators.validate_filename(filename)
             self._new_names.append(filename)
