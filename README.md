@@ -29,18 +29,18 @@
 
 ```text
 batch-renamer/
-├── batch_renamer/                # Основной пакет
-│   ├── cli/                      # Подпакет для работы с командной строкой
+├── batch_renamer/                          # Основной пакет
+│   ├── cli/                                # Подпакет для работы с командной строкой
 │   │   ├── __init__.py
-│   │   ├── get_args.py           # Парсинг аргументов (argparse)
-│   │   └── messages.py           # Вывод сообщений, предупреждений, запросов
+│   │   ├── get_args.py                     # Парсинг аргументов (argparse)
+│   │   └── messages.py                     # Вывод сообщений, предупреждений, запросов
 │   ├── __init__.py
-│   ├── __main__.py               # Точка входа (python -m batch_renamer)
-│   ├── exceptions.py             # Пользовательские исключения
-│   ├── renamer.py                # Класс Renamer (основная логика)
-│   └── validators.py             # Валидация путей, имён, параметров счётчика
-├── tests/                        # Тесты
-│   ├── cli/                      # Тесты для подпакета cli
+│   ├── __main__.py                         # Точка входа (python -m batch_renamer)
+│   ├── exceptions.py                       # Пользовательские исключения
+│   ├── renamer.py                          # Класс Renamer (основная логика)
+│   └── validators.py                       # Валидация путей, имён, параметров счётчика
+├── tests/                                  # Тесты
+│   ├── cli/                                # Тесты для подпакета cli
 │   │   ├── test_get_args.py
 │   │   ├── test_get_changes_accept.py
 │   │   ├── test_show_changes.py
@@ -48,14 +48,13 @@ batch-renamer/
 │   │   ├── test_show_error.py
 │   │   ├── test_show_success_changes.py
 │   │   └── test_show_warning.py
-│   ├── validators/               # Тесты для validators.py
+│   ├── validators/                         # Тесты для validators.py
 │   │   ├── test_validate_counter_param.py
 │   │   ├── test_validate_filename.py
 │   │   └── test_validate_path.py
-│   └── (renamer/)                # (планируется) тесты для Renamer
-│       └── test_renamer.py
+│   └── test_renamer.py                     # тесты для Renamer
 ├── .gitignore
-├── pyproject.toml                # Конфигурация проекта, зависимости, pytest
+├── pyproject.toml                          # Конфигурация проекта, зависимости, pytest
 └── README.md
 ```
 
