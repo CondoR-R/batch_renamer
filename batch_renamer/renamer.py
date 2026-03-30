@@ -49,6 +49,8 @@ class Renamer:
             dynamic_part = pattern[dynamic_start + 1 : dynamic_end]
             suffix = pattern[dynamic_end + 1 :]
 
+        if len(pattern_arr) == 2 and extension == "":
+            suffix = suffix + "."
         return (prefix, dynamic_part, suffix, extension)
 
     def _get_dynamic_counter(self, param: str, i: int) -> str:
@@ -75,7 +77,7 @@ class Renamer:
         """
         match dynamic_type:
             case "counter":
-                return self._get_dynamic_counter(dynamic_param, i + 1)
+                return self._get_dynamic_counter(dynamic_param, i)
             case _:
                 raise exceptions.PatternValidationError(
                     f'Неизвестный тип динамической части паттерна "{dynamic_type}"'
@@ -85,7 +87,7 @@ class Renamer:
         """
         Получение содержимого динамической части названия файла
         :param str dynamic_part: динамическая часть
-        :param int i: индекс файла в списке
+        :param int i: номер файла в списке
         :return: str
         """
         if not dynamic_part:
@@ -109,7 +111,7 @@ class Renamer:
         prefix, dynamic_part, suffix, extension = self._parse_pattern()
 
         for i in range(len(self._files)):
-            dynamic_content = self._get_dynamic_content(dynamic_part, i)
+            dynamic_content = self._get_dynamic_content(dynamic_part, i + 1)
             filename = (
                 prefix
                 + dynamic_content
