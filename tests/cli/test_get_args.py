@@ -4,7 +4,7 @@ from batch_renamer import cli
 
 
 def test_correct_args(monkeypatch):
-    expected_object = cli.Args(path="\\photo", pattern="photo.jpeg", dry_run=True)
+    expected_object = cli.Args(path="\\photo", pattern="photo.jpeg", dry_run=True, ext=None)
     monkeypatch.setattr(
         "sys.argv",
         [
@@ -20,7 +20,7 @@ def test_correct_args(monkeypatch):
 
 
 def test_default_path(monkeypatch):
-    expected_object = cli.Args(path=".", pattern="photo.jpeg", dry_run=True)
+    expected_object = cli.Args(path=".", pattern="photo.jpeg", dry_run=True, ext=None)
     monkeypatch.setattr(
         "sys.argv", ["main.py", "--pattern", expected_object.pattern, "--dry-run"]
     )
@@ -28,7 +28,7 @@ def test_default_path(monkeypatch):
 
 
 def test_without_dry_run(monkeypatch):
-    expected_object = cli.Args(path="\\photo", pattern="photo.jpeg", dry_run=False)
+    expected_object = cli.Args(path="\\photo", pattern="photo.jpeg", dry_run=False, ext=None)
     monkeypatch.setattr(
         "sys.argv",
         [

@@ -6,7 +6,9 @@ from . import validators
 
 
 class Renamer:
-    def __init__(self, path: pathlib.Path, pattern: str, ext_arr: list[str] | None):
+    def __init__(
+        self, path: pathlib.Path, pattern: str, ext_arr: list[str] | None = None
+    ):
         self._path = path
         self._pattern = pattern
         self._files: list[pathlib.Path] = []
@@ -122,6 +124,7 @@ class Renamer:
 
         for i in range(len(self._files)):
             dynamic_content = self._get_dynamic_content(dynamic_part, i + 1)
+            # если в паттерне было указано сохранеие исходного расширения файла
             if extension == "{ext}":
                 ext = "." + str(self._files[i]).rsplit(".", 1)[1]
             else:
