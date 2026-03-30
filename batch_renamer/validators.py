@@ -70,6 +70,11 @@ def validate_counter_param(param: str) -> tuple[str, int]:
     :param str param: параметр counter, не пустая строка
     :return: символ заполнения пробелов, колличество цифр
     """
+    # пустой параметр
+    if not param:
+        raise exceptions.PatternValidationError(
+            "На валидацию передан пустой параметр counter"
+        )
     # если не указан тип d (decimal)
     if param[-1] != "d":
         raise exceptions.PatternValidationError(
@@ -86,6 +91,10 @@ def validate_counter_param(param: str) -> tuple[str, int]:
     symbol = param[0]
     try:
         length = int(param[1:-1])
+        if length < 1:
+            raise exceptions.PatternValidationError(
+                f'Длина динамической части в паттерне "{param[1:-1]}" должна быть положительным числом'
+            )
     except:
         raise exceptions.PatternValidationError(
             f'Длина динамической части в паттерне "{param[1:-1]}" должна быть числом'

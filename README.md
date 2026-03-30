@@ -30,19 +30,32 @@
 ```text
 batch-renamer/
 ├── batch_renamer/                # Основной пакет
-│   ├── cli/                      # Модуль обработки командной строки
+│   ├── cli/                      # Подпакет для работы с командной строкой
 │   │   ├── __init__.py
 │   │   ├── get_args.py           # Парсинг аргументов (argparse)
-│   │   └── messages.py           # Сообщения для вывода (help, dry-run и т.д.)
+│   │   └── messages.py           # Вывод сообщений, предупреждений, запросов
 │   ├── __init__.py
-│   ├── __main__.py               # Точка входа: "python -m batch_renamer" или "batch-renamer"
+│   ├── __main__.py               # Точка входа (python -m batch_renamer)
 │   ├── exceptions.py             # Пользовательские исключения
-│   ├── renamer.py                # Класс Renamer с логикой переименования
-│   └── validators.py             # Валидация путей, шаблонов и т.д.
-├── tests/                        # Директория тестов
-│   └── test_cli.py               # Тесты для cli (unittest)
+│   ├── renamer.py                # Класс Renamer (основная логика)
+│   └── validators.py             # Валидация путей, имён, параметров счётчика
+├── tests/                        # Тесты
+│   ├── cli/                      # Тесты для подпакета cli
+│   │   ├── test_get_args.py
+│   │   ├── test_get_changes_accept.py
+│   │   ├── test_show_changes.py
+│   │   ├── test_show_empty_message.py
+│   │   ├── test_show_error.py
+│   │   ├── test_show_success_changes.py
+│   │   └── test_show_warning.py
+│   ├── validators/               # Тесты для validators.py
+│   │   ├── test_validate_counter_param.py
+│   │   ├── test_validate_filename.py
+│   │   └── test_validate_path.py
+│   └── (renamer/)                # (планируется) тесты для Renamer
+│       └── test_renamer.py
 ├── .gitignore
-├── pyproject.toml                # Конфигурация проекта
+├── pyproject.toml                # Конфигурация проекта, зависимости, pytest
 └── README.md
 ```
 
